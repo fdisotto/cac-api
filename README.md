@@ -1,6 +1,9 @@
 # cac-api
 PHP wrapper for the cloudatcost.com API - (https://github.com/cloudatcost/api)
 
+## References
+https://github.com/cloudatcost/api
+
 ## Install
 Via [Composer](https://getcomposer.org/)
 
@@ -61,4 +64,4 @@ $cac->getConsoleUrl($serverID);
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
