@@ -5,7 +5,7 @@
  * @author      Fabio Di Sotto <fabio.disotto@gmail.com>
  * @copyright   2015 Fabio Di Sotto
  * @link        https://github.com/fdisotto/cac-api
- * @version     1.0.0
+ * @version     1.0.1
  *
  * MIT LICENSE
  *
@@ -38,22 +38,17 @@ namespace fdisotto;
  *
  * @author Fabio Di Sotto
  */
-class CACApi
+class CACApi extends \Curl\Curl
 {
     /**
      * @var array
      */
-    private $_data = array();
+    public $_data = array();
 
     /**
      * @var array
      */
     private $_response = null;
-
-    /**
-     * @var \Curl\Curl
-     */
-    private $_curl = null;
 
     /**
      * @const string
@@ -97,11 +92,7 @@ class CACApi
      */
     public function __construct(array $conf)
     {
-        if (!in_array('curl', get_loaded_extensions())) {
-            throw new \Exception('cURL is not enabled', 0);
-        }
-
-        $this->_curl = new \Curl\Curl();
+        parent::__construct();
 
         $this->_data = $conf;
     }
@@ -115,7 +106,7 @@ class CACApi
     public function getServers()
     {
         $this->_make_request(self::SERVERS_URL, $this->_data);
-        return $this->_response['data'];
+        return $this->_response;
     }
 
     /**
@@ -127,7 +118,7 @@ class CACApi
     public function getTemplates()
     {
         $this->_make_request(self::TEMPLATES_URL, $this->_data);
-        return $this->_response['data'];
+        return $this->_response;
     }
 
     /**
@@ -139,7 +130,7 @@ class CACApi
     public function getTasks()
     {
         $this->_make_request(self::TASKS_URL, $this->_data);
-        return $this->_response['data'];
+        return $this->_response;
     }
 
     /**
@@ -206,16 +197,34 @@ class CACApi
     {
         if ($type == 'GET') {
             try {
-                $this->_curl->get(self::BASE_URL . self::API_VERSION . $where, $data);
-                $this->_response = json_decode($this->_curl->response, true);
+                $this->get(self::BASE_URL . self::API_VERSION . $where, $data);
+                $this->_response = json_decode($this->response, true);
+                if ($this->_response['status'] === 'ok') {
+                    if (array_key_exists('data', $this->_response)) {
+                        $this->_response = $this->_response['data'];
+                    }
+                    return true;
+                } else {
+                    $this->_response = $this->_response;
+                    return false;
+                }
             } catch (\Exception $e) {
                 throw new \Exception('Something gone wrong', 0, $e);
             }
         }
         elseif ($type == 'POST') {
             try {
-                $this->_curl->post(self::BASE_URL . self::API_VERSION . $where, $data);
-                $this->_response = json_decode($this->_curl->response, true);
+                $this->post(self::BASE_URL . self::API_VERSION . $where, $data);
+                $this->_response = json_decode($this->response, true);
+                if ($this->_response['status'] === 'ok') {
+                    if (array_key_exists('data', $this->_response)) {
+                        $this->_response = $this->_response['data'];
+                    }
+                    return true;
+                } else {
+                    $this->_response = $this->_response;
+                    return false;
+                }
             } catch (\Exception $e) {
                 throw new \Exception('Something gone wrong', 0, $e);
             }
@@ -223,7 +232,9 @@ class CACApi
             throw new \Exception('Invalid Request Type', 0);
         }
 
-        return true;
+        $this->close();
+
+        return false;
     }
 
     /**
@@ -241,7 +252,7 @@ class CACApi
         $data['action'] = $action;
 
         try {
-            $this->_make_request(self::POWER_OP_URL, $data, 'POST');
+            return $this->_make_request(self::POWER_OP_URL, $data, 'POST');
         } catch (\Exception $e) {
             throw new \Exception('Something gone wrong', 0, $e);
         }
