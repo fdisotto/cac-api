@@ -1,5 +1,5 @@
 # cac-api
-PHP wrapper for the cloudatcost API's
+PHP wrapper for the cloudatcost's API
 
 ## References
 https://github.com/cloudatcost/api
@@ -58,7 +58,23 @@ $cac->resetServer($serverID);
 $cac->getConsoleUrl($serverID);
 ```
 
+#### Rename server
+```php
+$cac->renameServer($serverID, $newName);
+```
+
+#### Modify reverse DNS
+```php
+$cac->reverseDNS($serverID, $hostname);
+```
+
 ## Update
+#### v1.0.3
+- Added `Rename server` function
+- Added `Modify reverse DNS` function
+- Updated tests
+
+
 #### v1.0.1
 - Added tests
 - Added example
