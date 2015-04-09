@@ -86,6 +86,16 @@ class CACApi extends \Curl\Curl
     const CONSOLE_URL = '/console.php';
 
     /**
+     * @const string
+     */
+    const RENAME_SRV_URL = '/renameserver.php';
+
+    /**
+     * @const string
+     */
+    const R_DNS_URL = '/rdns.php';
+
+    /**
      * Constructor
      *
      * @param array $conf key and login prameters
@@ -183,6 +193,42 @@ class CACApi extends \Curl\Curl
         $this->_make_request(self::CONSOLE_URL, $data, 'POST');
 
         return $this->_response['console'];
+    }
+
+    /**
+     * Rename the server label
+     * https://github.com/cloudatcost/api#rename-server
+     *
+     * @param int $sid Server ID
+     * @param string $name Name
+     * @return bool|string false or "success" if success
+     */
+    public function renameServer($sid = '', $name = '')
+    {
+        $data = $this->_data;
+        $data['sid'] = $sid;
+        $data['name'] = $name;
+        $this->_make_request(self::RENAME_SRV_URL, $data, 'POST');
+
+        return array_key_exists('result', $this->_response) ? $this->_response['result'] : false;
+    }
+
+    /**
+     * Modify the reverse DNS & hostname of the VPS
+     * https://github.com/cloudatcost/api#modify-reverse-dns
+     *
+     * @param int $sid Server ID
+     * @param string $hostname Hostname
+     * @return bool|string false or "success" if success
+     */
+    public function reverseDNS($sid = '', $hostname = '')
+    {
+        $data = $this->_data;
+        $data['sid'] = $sid;
+        $data['hostname'] = $hostname;
+        $this->_make_request(self::R_DNS_URL, $data, 'POST');
+
+        return array_key_exists('result', $this->_response) ? $this->_response['result'] : false;
     }
 
     /**

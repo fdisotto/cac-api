@@ -2,14 +2,19 @@
 
 class CACApiTest extends PHPUnit_Framework_TestCase
 {
-    public function testInstanceOf()
+    private $cac;
+
+    public function setUp()
     {
-        $cac = new \fdisotto\CACApi(array(
+        $this->cac = new \fdisotto\CACApi(array(
             'key'   => 'TestKey',
             'login' => 'TestLogin'
         ));
+    }
 
-        $this->assertInstanceOf(get_class($cac), new \fdisotto\CACApi(array(
+    public function testInstanceOf()
+    {
+        $this->assertInstanceOf(get_class($this->cac), new \fdisotto\CACApi(array(
             'key'   => 'TestKey',
             'login' => 'TestLogin'
         )));
@@ -17,82 +22,52 @@ class CACApiTest extends PHPUnit_Framework_TestCase
 
     public function testArrayKeyConfig()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertArrayHasKey('key', $cac->_data);
+        $this->assertArrayHasKey('key', $this->cac->_data);
     }
 
     public function testArrayLoginConfig()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertArrayHasKey('login', $cac->_data);
+        $this->assertArrayHasKey('login', $this->cac->_data);
     }
 
     public function testConfigKey()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertEquals($cac->_data['key'], 'TestKey');
+        $this->assertEquals($this->cac->_data['key'], 'TestKey');
     }
 
     public function testConfigLogin()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertEquals($cac->_data['login'], 'TestLogin');
+        $this->assertEquals($this->cac->_data['login'], 'TestLogin');
     }
 
     public function testHttpStatusCode()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $cac->getServers();
-        $this->assertEquals($cac->http_status_code, 412);
+        $this->cac->getServers();
+        $this->assertEquals($this->cac->http_status_code, 412);
     }
 
     public function testPowerOnServerFalse()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertFalse($cac->powerOnServer('123456'));
+        $this->assertFalse($this->cac->powerOnServer(123456));
     }
 
     public function testPowerOffServerFalse()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
-
-        $this->assertFalse($cac->powerOffServer('123456'));
+        $this->assertFalse($this->cac->powerOffServer(123456));
     }
 
     public function testResetServerFalse()
     {
-        $cac = new \fdisotto\CACApi(array(
-            'key'   => 'TestKey',
-            'login' => 'TestLogin'
-        ));
+        $this->assertFalse($this->cac->resetServer(123456));
+    }
 
-        $this->assertFalse($cac->resetServer('123456'));
+    public function testRenameServerFalse()
+    {
+        $this->assertFalse($this->cac->renameServer(123456, 'test'));
+    }
+
+    public function testReverseDNSFalse()
+    {
+        $this->assertFalse($this->cac->reverseDNS(123456, 'test'));
     }
 }
