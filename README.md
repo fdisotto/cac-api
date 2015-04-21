@@ -68,7 +68,16 @@ $cac->renameServer($serverID, $newName);
 $cac->reverseDNS($serverID, $hostname);
 ```
 
+#### Run Mode
+```php
+$cac->runMode($serverID, $runmode);
+```
+
 ## Update
+#### v1.0.4
+- Added `Run mode` function
+
+
 #### v1.0.3
 - Added `Rename server` function
 - Added `Modify reverse DNS` function
